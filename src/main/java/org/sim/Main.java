@@ -1,24 +1,39 @@
 package org.sim;
 
+import org.axonframework.eventhandling.EventBus;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
 import java.util.ArrayList;
+import java.util.List;
 
-public class Main {
+@SpringBootApplication
+public class Main implements CommandLineRunner {
+
+    private final EventBus eventBus;
+
+    public Main(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
     public static void main(String[] args) {
-        Cult scienthologyCult = new Cult("Scienthology", "Tom Cruise", 902, 8.2, 7.6 );
-        Cult churchOfFierySkies = new Cult("Church of fiery skies", "Jesus", 524, 9.5, 1.4);
-        Cult doomsdayBelievers = new Cult("Doomsday Believers", "Aubrey Plaza", 209, 4.6, 10.0);
-        Cult scarletCrusade = new Cult("The Scarlet Crusade", "Alexander Mograine", 2012, 8.8, 5.6);
+        SpringApplication.run(Main.class, args);
+    }
 
-        ArrayList<Cult> cults = new ArrayList<>();
+    @Override
+    public void run(String... args) {
+        List<Cult> cults = new ArrayList<>();
 
-        cults.add(scienthologyCult);
-        cults.add(churchOfFierySkies);
-        cults.add(doomsdayBelievers);
-        cults.add(scarletCrusade);
+        cults.add(new Cult("1", "Scienthology", 902, eventBus));
+        cults.add(new Cult("2", "Church of Fiery Skies", 524, eventBus));
+        cults.add(new Cult("3", "Doomsday Believers", 209, eventBus));
+        cults.add(new Cult("4", "The Scarlet Crusade", 2012, eventBus));
 
         for (int i = 1; i <= 10; i++) {
             System.out.println("\n Turn: " + "[" + i + "]");
-            cults.stream().forEach(Cult::takeTurn);
+            cults.forEach(Cult::recruitFollowers);
         }
     }
 }
